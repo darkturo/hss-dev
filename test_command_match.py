@@ -1,20 +1,7 @@
 import unittest
 from command import Command
 
-class TestCommandBase(unittest.TestCase):
-   def test_create_command(self):
-      """ Testing the constructor with one argument """
-      _list = "list"
-      cmd = Command(_list)
-      self.assertEqual(cmd.command, _list);
-
-   def test_create_command_with_aliases(self):
-      """ Testing the constructor with two arguments (list and aliases)"""
-      _list    = "list"
-      _aliases = ["ls", "lst"]
-      cmd = Command(_list, _aliases)
-      self.assertEqual(cmd.aliases, _aliases);
-
+class TestCommandMatch(unittest.TestCase):
    def test_argv1_matches_with_cmd(self):
       """ Testing that the command in argv[1]('list) matches with Command('list') """
       _pathname = "/foo/bar/devtool"
@@ -50,3 +37,4 @@ class TestCommandBase(unittest.TestCase):
       myArgv    = [_pathname, _ls, "--help"] 
       cmd = Command(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
+

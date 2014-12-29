@@ -16,9 +16,17 @@ class TestCommandBase(unittest.TestCase):
       self.assertEqual(cmd.aliases, _aliases);
 
    def test_match_argv1_should_match_with_cmd(self):
-      """ Testing that the command in argv[1] matches with Command('list') """
+      """ Testing that the command in argv[1]('list) matches with Command('list') """
       _pathname = "/foo/bar/devtool"
       _list     = "list"
-      myArgv    = [_list, "--help"] 
+      myArgv    = [_pathname, _list, "--help"] 
       cmd = Command(_list)
       self.assertTrue( cmd.match(myArgv) );
+
+   def test_match_argv1_should_not_match_with_cmd(self):
+      """ Testing that the command in argv[1]('show') does not match with Command('list') """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      myArgv    = [_pathname, "show"] 
+      cmd = Command(_list)
+      self.assertFalse( cmd.match(myArgv) );

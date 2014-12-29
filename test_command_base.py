@@ -40,3 +40,13 @@ class TestCommandBase(unittest.TestCase):
       myArgv    = [_pathname, _ls, "--help"] 
       cmd = Command(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
+
+   def test_argv1_does_not_match_with_cmd_neither_aliases(self):
+      """ Testing that the alias command in argv[1]('show') does not match with neither the command or the aliases commands of Command('list', ['ls', 'lst']) """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      _ls       = "ls"
+      _aliases  = [_ls, "lst"]
+      myArgv    = [_pathname, _ls, "--help"] 
+      cmd = Command(_list, _aliases)
+      self.assertTrue( cmd.match(myArgv) );

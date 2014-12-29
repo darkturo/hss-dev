@@ -18,5 +18,7 @@ class Command:
           if it is 85% close to the command (some misspelling perhaps), match
           will raise a MisspelledCommandException.
       """
-      return ( self.command == args[1] )
-
+      inCommand = args[1]
+      
+      return ( inCommand == self.command or 
+               inCommand in self.aliases )

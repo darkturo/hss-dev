@@ -2,21 +2,64 @@ class MisspelledCommandException(Exception):
    pass
 
 class Command:
+   """
+   Command Base class.
+
+   Extend this command class in order to use it. 
+
+   The class provides the following methods:
+      - match(argument_list)
+         This method tell if the provided argument list
+         (os.sys.argv alike) matches with the instance of
+         Command.
+      - apply(argument_list)
+         This method, parses, and validates the argument_list
+         using argparse. If the parsing is successful, the
+         method will invoke the subclass method execute, to
+         trigger the required actions for the command the
+         class represents.
+
+   All the subclasses of Command need to implement the
+   following methods in order to make it work properly with a
+   collection of commands:
+      - self.addOptionsForCommand(parser)
+         This method should be overwritten in order to add more
+         specific options for the command subclass.
+      - applyCommand(options)
+         This method needs to be implemented in the Command
+         subclass. The purpose of this method is to execute
+         the actions that the subclass of Command is meant to
+         do.
+         The method will be invoked if the parsing of the
+         command line options was successful. The method
+         will receive as argument, the result of the
+         ArgumentParser.parse_args() method, which is an
+         object that contains attributes for all the
+         selected options.
+   """
    def __init__(self, command, aliases = []):
       """
-      Command("the_command", ["thecmd", "cmd", "alias2"])
+      Constructor.
+
+        Arguments:
+         command - The name of the command to be used for the
+                   parsing.
+         aliases - A list of possible alias, that cannot be
+                   derived from the name.
       """
       self.command = command
       self.aliases = aliases
    
    def match(self, args):
-      """ Tells whether the command encoded in the argv[1] matches with the
-          current value of self.command, or any of the aliases in the
-          self.aliases list.
-          If none of the previous gives a match, the method will find how close
-          the command in argv[1] is to self.command (not to the aliases), and
-          if it is 85% close to the command (some misspelling perhaps), match
-          will raise a MisspelledCommandException.
+      """ 
+      Tells whether the command encoded in the argv[1]
+      matches with the current value of self.command, or any
+      of the aliases in the self.aliases list.
+      If none of the previous gives a match, the method will
+      find how close the command in argv[1] is to
+      self.command (not to the aliases), and if it is 85%
+      close to the command (some misspelling perhaps), match
+      will raise a MisspelledCommandException.
       """
       inCommand = args[1]
       
@@ -24,8 +67,10 @@ class Command:
                inCommand in self.aliases )
 
    def apply(self, args):
-      """ Applies the logic for the implementation of the particular command.
-          This method needs to be overwritten by the inherited classes, to
-          define the specific logic they require.
+      """ 
+      Applies the logic for the implementation of the
+      particular command. This method needs to be
+      overwritten by the inherited classes, to define the
+      specific logic they require.
       """
       raise NotImplementedError

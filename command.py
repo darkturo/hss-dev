@@ -22,3 +22,10 @@ class Command:
       
       return ( inCommand == self.command or 
                inCommand in self.aliases )
+
+   def apply(args):
+      """ Applies the logic for the implementation of the particular command.
+          This method needs to be overwritten by the inherited classes, to
+          define the specific logic they require.
+      """
+      raise NotImplemented

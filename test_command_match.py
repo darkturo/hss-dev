@@ -1,13 +1,16 @@
 import unittest
 from command import Command
 
+class DummyCommand(Command):
+   pass
+
 class TestCommandMatch(unittest.TestCase):
    def test_argv1_matches_with_cmd(self):
       """ Testing that the command in argv[1]('list) matches with Command('list') """
       _pathname = "/foo/bar/devtool"
       _list     = "list"
       myArgv    = [_pathname, _list, "--help"] 
-      cmd = Command(_list)
+      cmd = DummyCommand(_list)
       self.assertTrue( cmd.match(myArgv) );
 
    def test_argv1_does_not_match_with_cmd(self):
@@ -15,7 +18,7 @@ class TestCommandMatch(unittest.TestCase):
       _pathname = "/foo/bar/devtool"
       _list     = "list"
       myArgv    = [_pathname, "show"] 
-      cmd = Command(_list)
+      cmd = DummyCommand(_list)
       self.assertFalse( cmd.match(myArgv) );
 
    def test_argv1_does_not_match_with_cmd_but_matches_with_aliases_cmd(self):
@@ -25,7 +28,7 @@ class TestCommandMatch(unittest.TestCase):
       _ls       = "ls"
       _aliases  = [_ls, "lst"]
       myArgv    = [_pathname, _ls, "--help"] 
-      cmd = Command(_list, _aliases)
+      cmd = DummyCommand(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
 
    def test_argv1_does_not_match_with_cmd_neither_aliases(self):
@@ -35,6 +38,6 @@ class TestCommandMatch(unittest.TestCase):
       _ls       = "ls"
       _aliases  = [_ls, "lst"]
       myArgv    = [_pathname, _ls, "--help"] 
-      cmd = Command(_list, _aliases)
+      cmd = DummyCommand(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
 

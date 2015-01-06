@@ -1,3 +1,6 @@
+# Arturo Escudero <arturo.escudero@ericsson.com> 2015
+import argparse 
+
 class MisspelledCommandException(Exception):
    pass
 
@@ -25,7 +28,7 @@ class Command:
       - self.addOptionsForCommand(parser)
          This method should be overwritten in order to add more
          specific options for the command subclass.
-      - applyCommand(options)
+      - applyCommand()
          This method needs to be implemented in the Command
          subclass. The purpose of this method is to execute
          the actions that the subclass of Command is meant to
@@ -47,8 +50,10 @@ class Command:
          aliases - A list of possible alias, that cannot be
                    derived from the name.
       """
+      self.program = "hss"
       self.command = command
       self.aliases = aliases
+      self.options = ()
    
    def match(self, args):
       """ 
@@ -79,6 +84,11 @@ class Command:
       proper implementation of the actions to be performed by
       this subclass.
       """
+      parser = self.__buildArgumentParser()
+      self.addOptionsForCommand(parser)
+      self.options = parser.parse_args()
+      self.applyCommand()
+
    def addOptionsForCommand(self, parser):
       """
       Override this implementation in case you want to make your Command
@@ -100,3 +110,21 @@ class Command:
       represents. For that it will use self.options, as well as other data.
       """
       raise NotImplementedError
+
+
+   def __buildArgumentParser(self):
+      prog = self.program + " " + self.command;
+      parser = argparse.ArgumentParser( prog ) 
+      self.__addDefaultOptionsForCommand( parser )
+      return parser
+
+   def __addDefaultOptionsForCommand(self, parser):
+      parser.add_argument('-v', '--verbose', action='store_true', 
+                          help='Enable verbose mode.');
+      parser.add_argument('-q', '--quiet', action='store_true', 
+                          help='This option will print no information after ' +
+                               'the execution of the command.');
+      parser.add_argument('-n', '--dry-run', action='store_true', 
+                          help='This option will print the actions that the ' +
+                               'script is planning to do, but it will not '   +
+                               'perform any real action.');

@@ -84,9 +84,17 @@ class Command:
       proper implementation of the actions to be performed by
       this subclass.
       """
+      # Build an instance of ArgumentParser with some basic default options
       parser = self.__buildArgumentParser()
+
+      # Add user defined options to the ArgumentParser
       self.addOptionsForCommand(parser)
-      self.options = parser.parse_args()
+      
+      # Parse command line options, but remove the program name and the
+      # command from the list using a slice of the args array.
+      self.options = parser.parse_args(args[2:])
+
+      # Call applyCommand to apply the program logic.
       self.applyCommand()
 
    def addOptionsForCommand(self, parser):

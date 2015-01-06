@@ -73,3 +73,21 @@ class TestCommandMatch(unittest.TestCase):
       self.assertFalse( cmd.options.verbose )
       self.assertFalse( cmd.options.quiet )
       self.assertFalse( cmd.options.dry_run )
+
+   def test_basic_behavior_with_dummy_applyCommandImpl_with_some_options(self):
+      """ Testing if the subclass provides a no implemented for addOptionsForCommand, three options are added by default.
+      """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      _ls       = "ls"
+      _aliases  = [_ls, "lst"]
+      myArgv    = [_pathname, _ls, "--verbose", "--dry-run"] 
+      class List(Command):
+         def applyCommand(self):
+            pass
+      cmd = List(_list, _aliases)
+      self.assertEqual( cmd.options, () )
+      cmd.apply( myArgv )
+      self.assertTrue( cmd.options.verbose )
+      self.assertFalse( cmd.options.quiet )
+      self.assertTrue( cmd.options.dry_run )

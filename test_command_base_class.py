@@ -56,12 +56,20 @@ class TestCommandMatch(unittest.TestCase):
       cmd = DummyCommand(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
 
-# Test Backlog
-"""
-Testing that apply raises an AttributeException when calling it as a method of the Command class
-Testing that apply raises an AttributeException when addArguments is not implemented by the calling subclass
-Testing that apply raises an AttributeException when applyCommand is not implemented by the calling subclass
-Testing that the default basic options for the provided parser are verbose and quiet
-Testing that the implementing command is able to add more options
-Testing that applyCommand
-"""
+   def test_basic_behavior_with_dummy_applyCommandImpl(self):
+      """ Testing if the subclass provides a no implemented for addOptionsForCommand, three options are added by default.
+      """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      _ls       = "ls"
+      _aliases  = [_ls, "lst"]
+      myArgv    = [_pathname, _ls] 
+      class List(Command):
+         def applyCommand(self):
+            pass
+      cmd = List(_list, _aliases)
+      self.assertEqual( cmd.options, () )
+      cmd.apply( myArgv )
+      self.assertFalse( cmd.options.verbose )
+      self.assertFalse( cmd.options.quiet )
+      self.assertFalse( cmd.options.dry_run )

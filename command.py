@@ -113,12 +113,18 @@ class Command:
 
 
    def __buildArgumentParser(self):
+      """
+      Build an argparse.ArgumentParser instance for the command subclass.
+      """
       prog = self.program + " " + self.command;
       parser = argparse.ArgumentParser( prog ) 
       self.__addDefaultOptionsForCommand( parser )
       return parser
 
    def __addDefaultOptionsForCommand(self, parser):
+      """
+      Add default options --verbose, --quiet and --dry-run to the parser.
+      """
       parser.add_argument('-v', '--verbose', action='store_true', 
                           help='Enable verbose mode.');
       parser.add_argument('-q', '--quiet', action='store_true', 

@@ -31,11 +31,11 @@ class Command:
          the actions that the subclass of Command is meant to
          do.
          The method will be invoked if the parsing of the
-         command line options was successful. The method
-         will receive as argument, the result of the
-         ArgumentParser.parse_args() method, which is an
-         object that contains attributes for all the
-         selected options.
+         command line options was successful. These options
+         will be saved in the self.options attribute, which
+         contains an object which attributes are all the
+         defined options, and their values depends on what
+         the user provided from the command line.
    """
    def __init__(self, command, aliases = []):
       """
@@ -69,8 +69,34 @@ class Command:
    def apply(self, args):
       """ 
       Applies the logic for the implementation of the
-      particular command. This method needs to be
-      overwritten by the inherited classes, to define the
-      specific logic they require.
+      particular command. In order to do this, the method
+      will parse the command line arguments (using the
+      default options -provisioned by __buildArgumentParser,
+      plus some other options provided by the Command subclass
+      via the addOptionsForCommand method), collect them into
+      the class attribute self.options, and finally invoking
+      the method applyCommand(), which should contain the
+      proper implementation of the actions to be performed by
+      this subclass.
+      """
+   def addOptionsForCommand(self, parser):
+      """
+      Override this implementation in case you want to make your Command
+      subclass to support extra options. 
+
+      The idea is to provide with this method new options by using the
+      interface of the argparse.ArgumentParser class.
+
+      For convenience, in case no extra options is needed, this will provide a
+      basic impl. which will add no extra option.
+      """
+      pass
+
+   def applyCommand(self):
+      """
+      Override this implementation to provide the logic of the Command subclass.
+
+      This method will contain the logic for the set of actions the command
+      represents. For that it will use self.options, as well as other data.
       """
       raise NotImplementedError

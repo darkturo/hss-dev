@@ -1,4 +1,4 @@
 #!/bin/bash
 LIB=$(git rev-parse --show-toplevel)/lib
-PYTHONPATH=$LIB python src/hss-dev.py $*
+PYTHONPATH=$LIB python src/hss.py $*
 

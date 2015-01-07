@@ -66,8 +66,10 @@ class Command:
       close to the command (some misspelling perhaps), match
       will raise a MisspelledCommandException.
       """
+      if (len(args) <= 1):
+         return False
+
       inCommand = args[1]
-      
       return ( inCommand == self.command or 
                inCommand in self.aliases )
 

@@ -20,6 +20,15 @@ class TestCommandBaseClass(unittest.TestCase):
       self.assertEqual(cmd.aliases, _aliases);
 
 class TestCommandMatch(unittest.TestCase):
+   def test_argv_with_no_arguments(self):
+      """ Testing the case when the command is called without any argument. 
+          In this case myArgv will only contain the program_name. """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      myArgv    = [_pathname] 
+      cmd = DummyCommand(_list)
+      self.assertFalse( cmd.match(myArgv) );
+
    def test_argv1_matches_with_cmd(self):
       """ Testing that the command in argv[1]('list) matches with Command('list') """
       _pathname = "/foo/bar/devtool"

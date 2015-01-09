@@ -65,6 +65,19 @@ class TestCommandMatch(unittest.TestCase):
       cmd = DummyCommand(_list, _aliases)
       self.assertTrue( cmd.match(myArgv) );
 
+   def test_get_command_assocated_strings(self):
+      """ 
+      Testing that Command is capable of returning a list of the command name and aliases
+      """
+      _pathname = "/foo/bar/devtool"
+      _list     = "list"
+      _ls       = "ls"
+      _lst      = "lst"
+      _listing  = "listing"
+      _aliases  = [_ls, _lst, _listing]
+      cmd = DummyCommand(_list, _aliases)
+      self.assertEqual( cmd.getCommandAssociatedStrings(), [_list] + _aliases )
+
    def test_basic_behavior_with_dummy_applyCommandImpl(self):
       """ Testing if the subclass provides a no implemented for addOptionsForCommand, three options are added by default.
       """

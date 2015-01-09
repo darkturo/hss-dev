@@ -54,6 +54,13 @@ class Command:
       self.command = command
       self.aliases = aliases
       self.options = ()
+
+   def getCommandAssociatedStrings(self):
+      """
+      Returns a list with the identifier for the command and the list of
+      defined aliases for the command.
+      """
+      return [ self.command ] + self.aliases
    
    def match(self, args):
       """ 
@@ -120,7 +127,6 @@ class Command:
       represents. For that it will use self.options, as well as other data.
       """
       raise NotImplementedError
-
 
    def __buildArgumentParser(self):
       """

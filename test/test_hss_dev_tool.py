@@ -8,6 +8,20 @@ class DummyCommand(Command):
 
 class TestDevTool(unittest.TestCase):
    """ Test basic tool functionality. """
+   def test_basic_call_with_no_argument(self):
+      """ 
+      Testing behavior without any argument
+      Simulating the case when the user invokes the devtool without any
+      argument. When doing that, processCommandLine should return False.
+      """
+      _program = "devtool"
+      _list = "list"
+      _show = "show"
+      def myCommandsBuilder():
+         return [ DummyCommand(_list), DummyCommand(_show) ]
+
+      self.assertFalse( hss.processCommandLine( myCommandsBuilder(), [ _program ] ) )
+
    def test_basic_command_matching(self):
       """ 
       Testing command matching.

@@ -62,10 +62,10 @@ def processCommandLine(commandList, args):
    # give support for some basic options (i.e. --version or --help).
    rootParser = buildRootArgumentParser(args[0])
 
-   # User is clue-less here, give him the help print
    if len(args) <= 1:
+      # User is clue-less here, give him the help print
       rootParser.print_help()
-      return True
+      return False
 
    if not args[1][0] == '-':
       # Find the closest alternatives to the given command. With this the tool

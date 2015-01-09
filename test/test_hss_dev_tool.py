@@ -3,7 +3,8 @@ from command import Command
 import hss
 
 class DummyCommand(Command):
-   pass
+   def applyCommand(self):
+      pass
 
 class TestDevTool(unittest.TestCase):
    """ Test basic tool functionality. """
@@ -17,10 +18,10 @@ class TestDevTool(unittest.TestCase):
       _show = "show"
       _command = _list
 
-      def myCommands():
+      def myCommandsBuilder():
          return [ DummyCommand(_list), DummyCommand(_show) ]
 
-      self.assertTrue( hss.processCommandLine( myCommands, [ _program, _command ] ) )
+      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
    def test_command_matching_with_alias(self):
       """
@@ -33,10 +34,27 @@ class TestDevTool(unittest.TestCase):
       _show = "show"
       _command = "ll"
 
-      def myCommands():
+      def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertTrue( hss.processCommandLine( myCommands, [ _program, _command ] ) )
+      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+
+   def test_command_not_matching(self):
+      """
+      Testing the case when there is no match.
+      invocation with a command that does not match gives an error
+      """
+      _program = "devtool"
+      _list = "list"
+      _list_aliases = ["ls", "l", "ll"]
+      _show = "show"
+      _config = "config"
+      _command = "status"
+
+      def myCommandsBuilder():
+         return [ DummyCommand(_list, _list_aliases), DummyCommand(_show), DummyCommand(_config) ]
+
+      self.assertFalse( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
 # Backlog
 # - invocation with two defined commands should return an error

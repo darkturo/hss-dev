@@ -88,10 +88,10 @@ class TestCommandMatch(unittest.TestCase):
       myArgv    = [_pathname, _ls] 
       class List(Command):
          def applyCommand(self):
-            pass
+            return True
       cmd = List(_list, _aliases)
       self.assertEqual( cmd.options, () )
-      cmd.apply( myArgv )
+      self.assertTrue( cmd.apply( myArgv ) )
       self.assertFalse( cmd.options.verbose )
       self.assertFalse( cmd.options.quiet )
       self.assertFalse( cmd.options.dry_run )
@@ -106,10 +106,24 @@ class TestCommandMatch(unittest.TestCase):
       myArgv    = [_pathname, _ls, "--verbose", "--dry-run"] 
       class List(Command):
          def applyCommand(self):
-            pass
+            return True
       cmd = List(_list, _aliases)
       self.assertEqual( cmd.options, () )
-      cmd.apply( myArgv )
+      self.assertTrue( cmd.apply( myArgv ) )
       self.assertTrue( cmd.options.verbose )
       self.assertFalse( cmd.options.quiet )
-      self.assertTrue( cmd.options.dry_run )
+
+   def test_basic_behavior_apply_should_return_False_when_applyCommand_fails(self):
+      """ Testing that when applyCommand fails, the error is propagated properly
+      """
+      _pathname = "/foo/bar/dtool"
+      _list     = "list"
+      _ls       = "ls"
+      _aliases  = [_ls, "lst"]
+      myArgv    = [_pathname, _ls, "--verbose", "--dry-run"] 
+      class List(Command):
+         def applyCommand(self):
+            return False
+      cmd = List(_list, _aliases)
+      self.assertEqual( cmd.options, () )
+      self.assertFalse( cmd.apply( myArgv ) )

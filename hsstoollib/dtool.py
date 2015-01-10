@@ -66,8 +66,7 @@ def processCommandLine(commandList, args):
    # corresponding command.
    for command in commandList:
       if command.match(args):
-         command.apply(args)
-         return True
+         return command.apply(args)
 
    if not args[1][0] == '-':
       # Find the closest alternatives to the given command. With this the tool

@@ -15,8 +15,8 @@ class Command:
       - apply(argument_list)
          This method, parses, and validates the argument_list
          using argparse. If the parsing is successful, the
-         method will invoke the subclass method execute, to
-         trigger the required actions for the command the
+         method will invoke the subclass method applyCommand, 
+         to trigger the required actions for the command the
          class represents.
 
    All the subclasses of Command need to implement the
@@ -87,6 +87,9 @@ class Command:
       the method applyCommand(), which should contain the
       proper implementation of the actions to be performed by
       this subclass.
+
+      When its done, it will return True or false indicating whether the
+      operation was executed successfully.
       """
       # Build an instance of ArgumentParser with some basic default options
       parser = self.__buildArgumentParser()
@@ -99,7 +102,7 @@ class Command:
       self.options = parser.parse_args(args[2:])
 
       # Call applyCommand to apply the program logic.
-      self.applyCommand()
+      return self.applyCommand()
 
    def addOptionsForCommand(self, parser):
       """
@@ -120,6 +123,8 @@ class Command:
 
       This method will contain the logic for the set of actions the command
       represents. For that it will use self.options, as well as other data.
+
+      Returns True/False to communicate the success or error of the involved operations. 
       """
       raise NotImplementedError
 

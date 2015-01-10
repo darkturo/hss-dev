@@ -4,7 +4,7 @@ import hsstoollib.dtool as dtool
 
 class DummyCommand(Command):
    def applyCommand(self):
-      pass
+      return True
 
 class TestDevTool(unittest.TestCase):
    """ Test basic tool functionality. """

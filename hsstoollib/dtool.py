@@ -22,23 +22,12 @@ programName = "hss"
 class Status(Command):
    pass
 
-class RootArgumentParser(argparse.ArgumentParser):
-   def exit(self, status=0, message=None):
-      if status != 0:
-         errorMessage = ""
-         if message:
-            errorMessage = message.rstrip()
-         errorMessage += " - [status = " + str(status) + " ]"
-         raise CommandLineError(errorMessage)
-      else:
-         raise ExitWithSuccessException(message)
-
 def buildCommandList():
    commandList = [ Status("status") ]
    return commandList
 
 def buildRootArgumentParser(programName):
-   parser     = RootArgumentParser( programName );
+   parser     = CommandLineParser( programName );
 
    versionStr = "{0} version {1}".format(programName, hsstoollib.__version__)
    parser.add_argument('-v', '--version', action='version', version=versionStr)

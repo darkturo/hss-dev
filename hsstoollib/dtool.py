@@ -4,6 +4,8 @@ import difflib
 import argparse
 from hsstoollib.commands import *
 
+programName = "hss"
+
 #TODO: remove this comment
 ##commandList = [ Status("status"),
 ##                Checkout("checkout"),
@@ -73,7 +75,7 @@ def processCommandLine(commandList, args):
    # the user of what went wrong should be nice. For that we'll use an
    # instance of argparse.ArgumentParser which will print help as needed, and
    # give support for some basic options (i.e. --version or --help).
-   rootParser = buildRootArgumentParser(args[0])
+   rootParser = buildRootArgumentParser( programName )
 
    if len(args) <= 1:
       # User is clue-less here, give him the help print
@@ -89,7 +91,7 @@ def processCommandLine(commandList, args):
 
       if len(bestMatches) > 0:
          # If there is possible matches, the user may have misspelled the command
-         hint = "'{0}' is not a valid command. See '{1} --help'.\n\n".format(args[1], args[0])
+         hint = "'{0}' is not a valid command. See '{1} --help'.\n\n".format(args[1], programName)
          hint += "Did you mean one of these?\n"
          hint += "\n".join(bestMatches)
          raise CommandLineMisspelledError(hint)

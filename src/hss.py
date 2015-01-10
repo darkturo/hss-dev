@@ -26,7 +26,7 @@ class BaseCommandLineException(Exception):
          self.msg = ""
 
    def __str__(self):
-      return self.msg
+      return self.msg.rstrip()
 
 class CommandLineError(BaseCommandLineException):
    pass

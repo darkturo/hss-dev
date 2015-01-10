@@ -6,6 +6,7 @@ import hsstoollib
 from hsstoollib.commands import *
 from hsstoollib.exceptions import CommandLineError, CommandLineMisspelledError, ExitWithSuccessException, ExitWithErrorException
 
+# dtool will be known outside as the value from programName
 programName = "hss"
 
 #TODO: remove this comment
@@ -23,11 +24,18 @@ class Status(Command):
    pass
 
 def buildCommandList():
-   commandList = [ Status("status") ]
-   return commandList
+   """
+   Returns a list with all the supported Commands that dtool can handle.
+   """
+   return [ Status("status") ]
 
 def buildRootArgumentParser(programName):
-   parser     = CommandLineParser( programName );
+   """
+   Creates an instance of CommandLineParser, with a set of options to generate
+   a good an informative help text, and it adds basic options for the 'root'
+   tool (dtool); for instance to handle the version or help printing.
+   """
+   parser = CommandLineParser( programName );
 
    versionStr = "{0} version {1}".format(programName, hsstoollib.__version__)
    parser.add_argument('-v', '--version', action='version', version=versionStr)
@@ -35,6 +43,24 @@ def buildRootArgumentParser(programName):
    return parser
 
 def processCommandLine(commandList, args):
+   """
+   This function takes a list of Command(s), and the command line argument,
+   and proceeds first to find whether the command in the command line argument
+   matches or not with any of the provided commandList. If so, it will just
+   apply the action and return success.
+   If there is no match, it tries to determine if it was a misspelling, in
+   which case it will raise an exception with all the possible matches.
+   If it determines there was not a misspelling, and the command is not an
+   option (does not start with "-") then it will return False.
+   Options are parsed using the rootParser, which is an instance of
+   CommandLineParser.
+   """
+   rootParser = buildRootArgumentParser( programName )
+   if len(args) <= 1:
+      # User is clue-less here, give him the help print
+      rootParser.print_help()
+      return False
+
    # Evaluate in chain whether any of the available commands in commandList
    # matches with the command line arguments (args), and apply the
    # corresponding command.
@@ -42,17 +68,6 @@ def processCommandLine(commandList, args):
       if command.match(args):
          command.apply(args)
          return True
-
-   # If the command line command is not in commandList, giving some hints to
-   # the user of what went wrong should be nice. For that we'll use an
-   # instance of argparse.ArgumentParser which will print help as needed, and
-   # give support for some basic options (i.e. --version or --help).
-   rootParser = buildRootArgumentParser( programName )
-
-   if len(args) <= 1:
-      # User is clue-less here, give him the help print
-      rootParser.print_help()
-      return False
 
    if not args[1][0] == '-':
       # Find the closest alternatives to the given command. With this the tool

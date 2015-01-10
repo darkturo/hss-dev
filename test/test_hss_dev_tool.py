@@ -72,6 +72,7 @@ class TestDevTool(unittest.TestCase):
 
    def test_version_option(self):
       """
+      Testing --version option support
       invocation without a command but with the version option should give the version
       """
       _program = "dtool"
@@ -85,9 +86,25 @@ class TestDevTool(unittest.TestCase):
 
       self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
-# Backlog
-# - TODO: work out the help for this command!!
+   def test_help_option(self):
+      """
+      Testing --help option support
+      invocation without a command but with the help option should print help.
+      """
+      _program = "dtool"
+      _list = "list"
+      _list_aliases = ["ls", "l", "ll"]
+      _show = "show"
+      _command = "-h"
+
+      def myCommandsBuilder():
+         return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
+
+      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+
 # - invocation with help, should give help
+
+# Backlog
 # - invocation with one misspelled command that barely matches with either the command or the alias should fail
 # - invocation with one misspelled command that is ambigous and matches with more than one provisioned command should fail
 # - invocation with two defined commands should return an error

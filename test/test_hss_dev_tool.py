@@ -86,9 +86,9 @@ class TestDevTool(unittest.TestCase):
       self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
 # Backlog
+# - TODO: work out the help for this command!!
 # - invocation with help, should give help
 # - invocation with one misspelled command that barely matches with either the command or the alias should fail
 # - invocation with one misspelled command that is ambigous and matches with more than one provisioned command should fail
 # - invocation with two defined commands should return an error
 # - invocation with a correct commands but not supported options should Fail.
-# - TODO: work out the help for this command!!

@@ -4,6 +4,7 @@ import difflib
 import argparse
 import hsstoollib
 from hsstoollib.commands import *
+from hsstoollib.exceptions import CommandLineError, CommandLineMisspelledError, ExitWithSuccessException, ExitWithErrorException
 
 programName = "hss"
 
@@ -19,25 +20,6 @@ programName = "hss"
 ##                ApplyUpgrade("apply-upgrade") ]
 
 class Status(Command):
-   pass
-
-class BaseCommandLineException(Exception):
-   def __init__(self, msg):
-      if msg:
-         self.msg = msg
-      else:
-         self.msg = ""
-
-   def __str__(self):
-      return self.msg.rstrip()
-
-class CommandLineError(BaseCommandLineException):
-   pass
-
-class CommandLineMisspelledError(BaseCommandLineException):
-   pass
-
-class ExitWithSuccessException(BaseCommandLineException):
    pass
 
 class RootArgumentParser(argparse.ArgumentParser):

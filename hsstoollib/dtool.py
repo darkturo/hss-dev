@@ -2,6 +2,7 @@
 import os
 import difflib
 import argparse
+import hsstoollib
 from hsstoollib.commands import *
 
 programName = "hss"
@@ -57,7 +58,7 @@ def buildCommandList():
 def buildRootArgumentParser(programName):
    parser     = RootArgumentParser( programName );
 
-   versionStr = "{0} version {1}".format(programName, '0.0.1');
+   versionStr = "{0} version {1}".format(programName, hsstoollib.__version__)
    parser.add_argument('-v', '--version', action='version', version=versionStr)
 
    return parser

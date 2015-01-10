@@ -18,34 +18,47 @@ from command import Command
 class Status(Command):
    pass
 
-class CommandLineError(Exception):
+class BaseCommandLineException(Exception):
    def __init__(self, msg):
-      self.msg = msg
+      if msg:
+         self.msg = msg
+      else:
+         self.msg = ""
 
    def __str__(self):
       return self.msg
 
-class CommandLineMisspelledError(Exception):
-   def __init__(self, msg):
-      self.msg = msg
+class CommandLineError(BaseCommandLineException):
+   pass
 
-   def __str__(self):
-      return self.msg
+class CommandLineMisspelledError(BaseCommandLineException):
+   pass
+
+class ExitWithSuccessException(BaseCommandLineException):
+   pass
 
 class RootArgumentParser(argparse.ArgumentParser):
    def exit(self, status=0, message=None):
-      errorMessage = ""
-      if message:
-         errorMessage = message
-      errorMessage += " - [status = " + status + " ]"
-      raise CommandLineError(errorMessage)
+      if status != 0:
+         errorMessage = ""
+         if message:
+            errorMessage = message.rstrip()
+         errorMessage += " - [status = " + str(status) + " ]"
+         raise CommandLineError(errorMessage)
+      else:
+         raise ExitWithSuccessException(message)
 
 def buildCommandList():
    commandList = [ Status("status") ]
    return commandList
 
 def buildRootArgumentParser(programName):
-   return RootArgumentParser(programName, version='0.0.1');
+   parser     = RootArgumentParser( programName );
+
+   versionStr = "{0} version {1}".format(programName, '0.0.1');
+   parser.add_argument('-v', '--version', action='version', version=versionStr)
+
+   return parser
 
 def processCommandLine(commandList, args):
    # Evaluate in chain whether any of the available commands in commandList
@@ -85,7 +98,11 @@ def processCommandLine(commandList, args):
          return False
    else:
       # Use the rootParser to evaluate the provided arguments.
-      opts = rootParser.parse_args(args)
+      try:
+         opts = rootParser.parse_args(args)
+      except ExitWithSuccessException as msg:
+         print msg 
+         return True
 
    return False
 

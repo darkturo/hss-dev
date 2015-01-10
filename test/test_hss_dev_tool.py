@@ -70,9 +70,25 @@ class TestDevTool(unittest.TestCase):
 
       self.assertFalse( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
+   def test_version_option(self):
+      """
+      invocation without a command but with the version option should give the version
+      """
+      _program = "devtool"
+      _list = "list"
+      _list_aliases = ["ls", "l", "ll"]
+      _show = "show"
+      _command = "-v"
+
+      def myCommandsBuilder():
+         return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
+
+      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+
 # Backlog
-# - invocation with two defined commands should return an error
+# - invocation with help, should give help
 # - invocation with one misspelled command that barely matches with either the command or the alias should fail
 # - invocation with one misspelled command that is ambigous and matches with more than one provisioned command should fail
-# - invocation with version should give the version
-# - invocation with help, should give help
+# - invocation with two defined commands should return an error
+# - invocation with a correct commands but not supported options should Fail.
+# - TODO: work out the help for this command!!

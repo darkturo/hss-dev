@@ -2,7 +2,7 @@
 import os
 import difflib
 import argparse
-from command import Command
+from hsstoollib.commands import *
 
 #TODO: remove this comment
 ##commandList = [ Status("status"),

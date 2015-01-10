@@ -1,4 +1,3 @@
 #!/bin/bash
-LIB=$(git rev-parse --show-toplevel)/lib
-PYTHONPATH=$LIB python src/hss.py $*
-
+LIB=$(git rev-parse --show-toplevel)
+PYTHONPATH=$LIB python hsstoollib/dtool.py $*

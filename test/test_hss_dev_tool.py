@@ -1,6 +1,6 @@
 import unittest
-from command import Command
-import hss
+from hsstoollib.commands import Command
+import hsstoollib.dtool as dtool
 
 class DummyCommand(Command):
    def applyCommand(self):
@@ -14,20 +14,20 @@ class TestDevTool(unittest.TestCase):
       Simulating the case when the user invokes the devtool without any
       argument. When doing that, processCommandLine should return False.
       """
-      _program = "devtool"
+      _program = "dtool"
       _list = "list"
       _show = "show"
       def myCommandsBuilder():
          return [ DummyCommand(_list), DummyCommand(_show) ]
 
-      self.assertFalse( hss.processCommandLine( myCommandsBuilder(), [ _program ] ) )
+      self.assertFalse( dtool.processCommandLine( myCommandsBuilder(), [ _program ] ) )
 
    def test_basic_command_matching(self):
       """ 
       Testing command matching.
       Invocation with one command that matches with any of the provisioned commands should pass
       """
-      _program = "devtool"
+      _program = "dtool"
       _list = "list"
       _show = "show"
       _command = _list
@@ -35,14 +35,14 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list), DummyCommand(_show) ]
 
-      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
    def test_command_matching_with_alias(self):
       """
       Testing command matching with alias.
       invocation with one command that matches with the alias command should pass
       """
-      _program = "devtool"
+      _program = "dtool"
       _list = "list"
       _list_aliases = ["ls", "l", "ll"]
       _show = "show"
@@ -51,14 +51,14 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
    def test_command_not_matching(self):
       """
       Testing the case when there is no match.
       invocation with a command that does not match gives an error
       """
-      _program = "devtool"
+      _program = "dtool"
       _list = "list"
       _list_aliases = ["ls", "l", "ll"]
       _show = "show"
@@ -68,13 +68,13 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show), DummyCommand(_config) ]
 
-      self.assertFalse( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      self.assertFalse( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
    def test_version_option(self):
       """
       invocation without a command but with the version option should give the version
       """
-      _program = "devtool"
+      _program = "dtool"
       _list = "list"
       _list_aliases = ["ls", "l", "ll"]
       _show = "show"
@@ -83,7 +83,7 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertTrue( hss.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
 # Backlog
 # - invocation with help, should give help

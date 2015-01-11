@@ -12,6 +12,13 @@ class CommandLineParser(argparse.ArgumentParser):
       - raise an exception instead of call os.sys.exit
    """
    def exit(self, status=0, message=None):
+      """
+      Override ArgumentParser.exit(), to Raise an exception with either
+      ExitWithSuccessException or ExitWithErrorException instead of printing
+      'message' and calling os.sys.exit(status).
+      This can be used to give better control of the execution flow. It comes
+      quite handy for testing too.
+      """
       if status != 0:
          errorMessage = ""
          if message:
@@ -20,6 +27,27 @@ class CommandLineParser(argparse.ArgumentParser):
          raise ExitWithErrorException(errorMessage)
       else:
          raise ExitWithSuccessException(message)
+
+   def format_help(self):
+      """
+      Override ArgumentParser.format_help() to provide a customized help output
+      without the list of optional and positional arguments that comes by
+      default with argparse.
+      """
+      formatter = self._get_formatter()
+
+      # usage
+      formatter.add_usage(self.usage, self._actions,
+                          self._mutually_exclusive_groups)
+
+      # description
+      formatter.add_text(self.description)
+
+      # epilog
+      formatter.add_text(self.epilog)
+
+      # determine help from format above
+      return formatter.format_help()
 
 """
 Explicit exports:

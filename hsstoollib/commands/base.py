@@ -1,11 +1,11 @@
 # Arturo Escudero <arturo.escudero@ericsson.com> 2015
-import argparse 
+import argparse
 
 class Command:
    """
    Command Base class.
 
-   Extend this command class in order to use it. 
+   Extend this command class in order to use it.
 
    The class provides the following methods:
       - match(argument_list)
@@ -15,7 +15,7 @@ class Command:
       - apply(argument_list)
          This method, parses, and validates the argument_list
          using argparse. If the parsing is successful, the
-         method will invoke the subclass method applyCommand, 
+         method will invoke the subclass method applyCommand,
          to trigger the required actions for the command the
          class represents.
 
@@ -49,7 +49,14 @@ class Command:
       """
       self.program = "hss"
       self.command = command
-      self.aliases = aliases
+
+      if type(aliases) is str:
+         print "YEYEYE"
+         self.aliases = [ aliases ]
+      else:
+         print "NONONO: "
+         self.aliases = aliases
+
       self.options = ()
 
    def __str__(self):
@@ -61,9 +68,9 @@ class Command:
       defined aliases for the command.
       """
       return [ self.command ] + self.aliases
-   
+
    def match(self, args):
-      """ 
+      """
       Tells whether the command encoded in the argv[1]
       matches with the current value of self.command, or any
       of the aliases in the self.aliases list.
@@ -72,11 +79,11 @@ class Command:
          return False
 
       inCommand = args[1]
-      return ( inCommand == self.command or 
+      return ( inCommand == self.command or
                inCommand in self.aliases )
 
    def apply(self, args):
-      """ 
+      """
       Applies the logic for the implementation of the
       particular command. In order to do this, the method
       will parse the command line arguments (using the
@@ -96,7 +103,7 @@ class Command:
 
       # Add user defined options to the ArgumentParser
       self.addOptionsForCommand(parser)
-      
+
       # Parse command line options, but remove the program name and the
       # command from the list using a slice of the args array.
       self.options = parser.parse_args(args[2:])
@@ -107,7 +114,7 @@ class Command:
    def addOptionsForCommand(self, parser):
       """
       Override this implementation in case you want to make your Command
-      subclass to support extra options. 
+      subclass to support extra options.
 
       The idea is to provide with this method new options by using the
       interface of the argparse.ArgumentParser class.
@@ -124,7 +131,7 @@ class Command:
       This method will contain the logic for the set of actions the command
       represents. For that it will use self.options, as well as other data.
 
-      Returns True/False to communicate the success or error of the involved operations. 
+      Returns True/False to communicate the success or error of the involved operations.
       """
       raise NotImplementedError
 
@@ -133,7 +140,7 @@ class Command:
       Build an argparse.ArgumentParser instance for the command subclass.
       """
       prog = self.program + " " + self.command;
-      parser = argparse.ArgumentParser( prog ) 
+      parser = argparse.ArgumentParser( prog )
       self.__addDefaultOptionsForCommand( parser )
       return parser
 
@@ -141,12 +148,12 @@ class Command:
       """
       Add default options --verbose, --quiet and --dry-run to the parser.
       """
-      parser.add_argument('-v', '--verbose', action='store_true', 
+      parser.add_argument('-v', '--verbose', action='store_true',
                           help='Enable verbose mode.');
-      parser.add_argument('-q', '--quiet', action='store_true', 
+      parser.add_argument('-q', '--quiet', action='store_true',
                           help='This option will print no information after ' +
                                'the execution of the command.');
-      parser.add_argument('-n', '--dry-run', action='store_true', 
+      parser.add_argument('-n', '--dry-run', action='store_true',
                           help='This option will print the actions that the ' +
                                'script is planning to do, but it will not '   +
                                'perform any real action.');

@@ -85,14 +85,20 @@ def processCommandLine(commandList, args):
          # Otherwise, the command is simply not supported, return False.
          return False
    else:
-      # Use the rootParser to evaluate the provided arguments.
+      # Finally, use the rootParser to evaluate the provided arguments.
       try:
          opts = rootParser.parse_args(args)
       except ExitWithSuccessException as msg:
          print msg 
          return True
+      except ExitWithErrorException as errMsg:
+         print str(errMsg).replace(args[0], "")
+         return False
 
    return False
 
 if __name__ == "__main__":
-   processCommandLine( buildCommandList(), os.sys.argv )
+   if processCommandLine( buildCommandList(), os.sys.argv ):
+      os.sys.exit( 0 )
+   else:
+      os.sys.exit( 1 )

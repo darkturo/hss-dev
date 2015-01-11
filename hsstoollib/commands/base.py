@@ -47,7 +47,7 @@ class Command:
          aliases - A list of possible alias, that cannot be
                    derived from the name.
       """
-      self.program = "hss"
+      self._program = "hss"
       self.command = command
 
       if type(aliases) is str:
@@ -55,6 +55,7 @@ class Command:
       else:
          self.aliases = aliases
 
+      self._parser = self.__buildArgumentParser()
       self.options = ()
 
    def __str__(self):
@@ -91,20 +92,14 @@ class Command:
       the class attribute self.options, and finally invoking
       the method applyCommand(), which should contain the
       proper implementation of the actions to be performed by
-      this subclass.
+      the subclass.
 
       When its done, it will return True or false indicating whether the
       operation was executed successfully.
       """
-      # Build an instance of ArgumentParser with some basic default options
-      parser = self.__buildArgumentParser()
-
-      # Add user defined options to the ArgumentParser
-      self.addOptionsForCommand(parser)
-
       # Parse command line options, but remove the program name and the
       # command from the list using a slice of the args array.
-      self.options = parser.parse_args(args[2:])
+      self.options = self._parser.parse_args(args[2:])
 
       # Call applyCommand to apply the program logic.
       return self.applyCommand()
@@ -129,17 +124,25 @@ class Command:
       This method will contain the logic for the set of actions the command
       represents. For that it will use self.options, as well as other data.
 
-      Returns True/False to communicate the success or error of the involved operations.
+      Returns True/False to communicate the success or error of the involved
+      operations.
       """
       raise NotImplementedError
 
    def __buildArgumentParser(self):
       """
-      Build an argparse.ArgumentParser instance for the command subclass.
+      Build an argparse.ArgumentParser instance and default and user defined
+      options for the command. 
       """
-      prog = self.program + " " + self.command;
+      prog = self._program + " " + self.command;
       parser = argparse.ArgumentParser( prog )
+
+      # Add default options to the ArgumentParser
       self.__addDefaultOptionsForCommand( parser )
+
+      # Add user defined options to the ArgumentParser
+      self.addOptionsForCommand( parser )
+
       return parser
 
    def __addDefaultOptionsForCommand(self, parser):

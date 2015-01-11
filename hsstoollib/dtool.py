@@ -23,11 +23,16 @@ programName = "hss"
 class Status(Command):
    pass
 
+class Help(Command):
+   def applyCommand(self):
+      print self.options
+      return True
+
 def buildCommandList():
    """
    Returns a list with all the supported Commands that dtool can handle.
    """
-   return [ Status("status") ]
+   return [ Help("help", ["--help"]), Status("status") ]
 
 def buildRootArgumentParser(programName):
    """
@@ -35,10 +40,14 @@ def buildRootArgumentParser(programName):
    a good an informative help text, and it adds basic options for the 'root'
    tool (dtool); for instance to handle the version or help printing.
    """
-   parser = CommandLineParser( programName );
+   usageText  = "%(prog)s [--version] [--help] <command> [<args>]"
+   parser = CommandLineParser( prog = programName,
+                               conflict_handler='resolve',
+                               add_help = False,
+                               usage = usageText );
 
-   versionStr = "{0} version {1}".format(programName, hsstoollib.__version__)
-   parser.add_argument('-v', '--version', action='version', version=versionStr)
+   versionText = "{0} version {1}".format(programName, hsstoollib.__version__)
+   parser.add_argument('-v', '--version', action='version', version=versionText)
 
    return parser
 
@@ -57,9 +66,8 @@ def processCommandLine(commandList, args):
    """
    rootParser = buildRootArgumentParser( programName )
    if len(args) <= 1:
-      # User is clue-less here, give him the help print
-      rootParser.print_help()
-      return False
+      # User is clue-less here, give him the help print using the Help command
+      args.append("help")
 
    # Evaluate in chain whether any of the available commands in commandList
    # matches with the command line arguments (args), and apply the

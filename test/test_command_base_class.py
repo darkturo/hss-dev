@@ -103,7 +103,7 @@ class TestCommandMatch(unittest.TestCase):
       _listing  = "listing"
       _aliases  = [_ls, _lst, _listing]
       cmd = DummyCommand(_list, _aliases)
-      self.assertEqual( cmd.getCommandAssociatedStrings(), [_list] + _aliases )
+      self.assertEqual( cmd.getListOfCommandNames(), [_list] + _aliases )
 
    def test_basic_behavior_with_dummy_applyCommandImpl(self):
       """ Testing if the subclass provides a no implemented for addOptionsForCommand, three options are added by default.

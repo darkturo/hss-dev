@@ -72,7 +72,7 @@ def processCommandLine(commandList, args):
       # Find the closest alternatives to the given command. With this the tool
       # will determine if the user misspelled the command, and thus give him
       # better hints of what went wrong.
-      possibleCommandNames = map(lambda c: c.getCommandAssociatedStrings(), commandList)
+      possibleCommandNames = map(lambda c: c.getListOfCommandNames(), commandList)
       bestMatches = difflib.get_close_matches(args[1], possibleCommandNames)
 
       if len(bestMatches) > 0:

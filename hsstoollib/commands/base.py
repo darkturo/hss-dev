@@ -51,18 +51,16 @@ class Command:
       self.command = command
 
       if type(aliases) is str:
-         print "YEYEYE"
          self.aliases = [ aliases ]
       else:
-         print "NONONO: "
          self.aliases = aliases
 
       self.options = ()
 
    def __str__(self):
-      return ",".join( self.getCommandAssociatedStrings() )
+      return ",".join( self.getListOfCommandNames() )
 
-   def getCommandAssociatedStrings(self):
+   def getListOfCommandNames(self):
       """
       Returns a list with the identifier for the command and the list of
       defined aliases for the command.

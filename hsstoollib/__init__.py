@@ -1,4 +1,5 @@
 __version__ = '0.0.2'
+__dtoolname__   = 'hss'
 __description__ = """ HSS development and testing toolbox for craftmen and superheroes """
 
 import dtool

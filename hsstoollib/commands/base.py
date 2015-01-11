@@ -1,5 +1,6 @@
 # Arturo Escudero <arturo.escudero@ericsson.com> 2015
 import argparse
+import hsstoollib
 
 class Command:
    """
@@ -47,7 +48,7 @@ class Command:
          aliases - A list of possible alias, that cannot be
                    derived from the name.
       """
-      self._program = "hss"
+      self._program = hsstoollib.__dtoolname__
       self.command = command
 
       if type(aliases) is str:

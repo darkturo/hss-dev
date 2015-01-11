@@ -6,8 +6,7 @@ import hsstoollib
 from hsstoollib.commands import *
 from hsstoollib.exceptions import CommandLineError, CommandLineMisspelledError, ExitWithSuccessException, ExitWithErrorException
 
-# dtool will be known outside as the value from programName
-programName = "hss"
+programName = hsstoollib.__dtoolname__
 
 #TODO: remove this comment
 ##commandList = [ Status("status"),

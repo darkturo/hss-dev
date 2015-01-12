@@ -2,7 +2,6 @@
 import argparse
 import hsstoollib
 from hsstoollib.commands import CommandLineParser
-from hsstoollib.exceptions import ExitWithSuccessException, ExitWithErrorException
 
 class Command:
    """
@@ -107,14 +106,7 @@ class Command:
       """
       # Parse command line options, but remove the program name and the
       # command from the list using a slice of the args array.
-      try:
-         self.options = self._parser.parse_args(args[2:])
-      except ExitWithSuccessException as msg:
-         print msg 
-         return True
-      except ExitWithErrorException as errMsg:
-         print str(errMsg).replace(args[0], "")
-         return False
+      self.options = self._parser.parse_args(args[2:])
 
       # Show man pages (if exist) for the command
       if self.options.help:

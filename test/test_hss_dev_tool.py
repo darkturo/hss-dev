@@ -1,5 +1,7 @@
+import os
 import unittest
 from hsstoollib.commands import Command
+from hsstoollib.exceptions import ExitWithSuccessException, ExitWithErrorException
 import hsstoollib.dtool as dtool
 
 class DummyCommand(Command):
@@ -8,6 +10,16 @@ class DummyCommand(Command):
 
 class TestDevTool(unittest.TestCase):
    """ Test basic tool functionality. """
+   def setUp(self):
+      """ Redirect stderr into stdout. """
+      self.oldStderr = os.sys.stderr
+      os.sys.stderr  = os.sys.stdout
+
+   def tearDown(self):
+      """ Restore stderr """
+      os.sys.stderr = self.oldStderr
+
+
    def test_basic_call_with_no_argument(self):
       """ 
       Testing behavior without any argument
@@ -84,7 +96,8 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      with self.assertRaises( ExitWithSuccessException ):
+         dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] )
 
    def test_h_option_should_print_usage_and_return_false(self):
       """
@@ -102,7 +115,9 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertFalse( dtool.processCommandLine( dtool.buildCommandList(), [ _program, _command ] ) )
+      os.sys.stderr = os.sys.stdout
+      with self.assertRaises( ExitWithErrorException ):
+         dtool.processCommandLine( dtool.buildCommandList(), [ _program, _command ] )
 
    def test_help_option_should_print_help_and_return_true(self):
       """

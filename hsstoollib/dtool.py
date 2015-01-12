@@ -22,16 +22,11 @@ programName = hsstoollib.__dtoolname__
 class Status(Command):
    pass
 
-class Help(Command):
-   def applyCommand(self):
-      print self.options
-      return True
-
 def buildCommandList():
    """
    Returns a list with all the supported Commands that dtool can handle.
    """
-   return [ Help("help", ["--help"]), Status("status") ]
+   return [ Help("help", "--help"), Status("status") ]
 
 def buildRootArgumentParser(programName):
    """

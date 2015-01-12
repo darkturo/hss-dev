@@ -43,6 +43,14 @@ class CommandLineParser(argparse.ArgumentParser):
       # description
       formatter.add_text(self.description)
 
+      # positionals, optionals and user-defined groups
+      for action_group in self._action_groups:
+         if action_group.title == self._optionals.title:
+            formatter._indent()
+            formatter._indent()
+            formatter.add_text(action_group.description)
+            formatter.add_arguments(action_group._group_actions)
+
       # epilog
       formatter.add_text(self.epilog)
 
@@ -53,8 +61,9 @@ class CommandLineParser(argparse.ArgumentParser):
 Explicit exports:
 """
 from base import Command
+from help import Help
 __all__ = [ 
-            'base', 
             'CommandLineParser',
-            'Command'
+            'Command',
+            'Help'
           ]

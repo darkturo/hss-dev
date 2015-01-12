@@ -86,10 +86,12 @@ class TestDevTool(unittest.TestCase):
 
       self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
 
-   def test_help_option(self):
+   def test_h_option_should_print_usage_and_return_false(self):
       """
-      Testing --help option support
-      invocation without a command but with the help option should print help.
+      Testing -h (short for help) option support
+      invocation without a command but with the short option -h (help). This is
+      given by default, but I want it to purposely give an error and print the
+      usage... and thus this is what this test verifies
       """
       _program = "dtool"
       _list = "list"
@@ -100,9 +102,21 @@ class TestDevTool(unittest.TestCase):
       def myCommandsBuilder():
          return [ DummyCommand(_list, _list_aliases), DummyCommand(_show) ]
 
-      self.assertTrue( dtool.processCommandLine( myCommandsBuilder(), [ _program, _command ] ) )
+      self.assertFalse( dtool.processCommandLine( dtool.buildCommandList(), [ _program, _command ] ) )
 
-# - invocation with help, should give help
+   def test_help_option_should_print_help_and_return_true(self):
+      """
+      Testing --help option support
+      invocation without a command but with the help option should print help.
+      """
+      _program = "dtool"
+      _list = "list"
+      _list_aliases = ["ls", "l", "ll"]
+      _show = "show"
+      _command = "--help"
+
+      self.assertTrue( dtool.processCommandLine( dtool.buildCommandList(), [ _program, _command ] ) )
+
 
 # Backlog
 # - invocation with one misspelled command that barely matches with either the command or the alias should fail

@@ -1,7 +1,7 @@
 # Arturo Escudero <arturo.escudero@ericsson.com> 2015
 import argparse
 import hsstoollib
-from hsstoollib.commands import CommandLineParser
+from hsstoollib.misc.argparse_helpers import CommandLineParser
 
 class Command:
    """

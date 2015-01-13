@@ -4,6 +4,7 @@ import difflib
 import argparse
 import hsstoollib
 from hsstoollib.commands import *
+from hsstoollib.misc import *
 from hsstoollib.exceptions import CommandLineError, CommandLineMisspelledError, ExitWithSuccessException, ExitWithErrorException
 
 programName = hsstoollib.__dtoolname__
@@ -93,12 +94,13 @@ def processCommandLine(commandList, args):
    return False
 
 if __name__ == "__main__":
+   result = False
    try:
       result = processCommandLine( buildCommandList(), os.sys.argv )
    except ExitWithSuccessException as msg:
       print msg 
    except ExitWithErrorException as errMsg:
-      print str(errMsg).replace(args[0], "")
+      print str(errMsg).replace(os.sys.argv[0], "")
 
    if result:
       os.sys.exit( 0 )

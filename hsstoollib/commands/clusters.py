@@ -1,7 +1,7 @@
 from hsstoollib.commands import Command
 from hsstoollib.exceptions import *
 
-from hsstoollib.cluster import Clusters
+from hsstoollib.cluster import Clusters, getCluster
 
 class RunningClusters(Command):
    """
@@ -25,3 +25,22 @@ class RunningClusters(Command):
 
    def printHelp(self):
       pass
+
+
+
+class ShowCluster(Command):
+   """
+   The cluster show command
+   """
+   def addOptionsForCommand(self, parser):
+      parser.add_argument('-c', '--cname', default="DefaultCluster",
+                          help='The cluster to query.')
+
+   def applyCommand(self):
+      cluster = getCluster (self.options.cname)
+     
+      if not cluster:
+         return False
+
+      print cluster.describe ()
+      return True

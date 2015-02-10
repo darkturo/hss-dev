@@ -1,7 +1,7 @@
 from hsstoollib.commands import Command
 from hsstoollib.exceptions import *
 
-from hsstoollib.cluster import Clusters
+from hsstoollib.cluster import getCluster
 
 class TPs(Command):
    """
@@ -12,14 +12,13 @@ class TPs(Command):
                           help='The cluster to query.')
 
    def applyCommand(self):
-      clusters = Clusters()
-      try:
-         cluster = clusters[self.options.cname]
-         for tp in sorted(cluster.processors.keys()):
-            print tp,
-      except KeyError:
-         print "Cluster %s is not running." % self.options.cname
+      cluster = getCluster (self.options.cname)
+     
+      if not cluster:
          return False
+
+      for tp in sorted(cluster.processors.keys()):
+         print tp,
 
       return True
 

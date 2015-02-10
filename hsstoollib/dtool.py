@@ -27,7 +27,9 @@ def buildCommandList():
    """
    Returns a list with all the supported Commands that dtool can handle.
    """
-   return [ Help("help", "--help"), Status("status") ]
+   return [Help("help", "--help"), Status("status"),
+           TPs("tps", aliases = ["processors"]),
+           RunningClusters("clusters", aliases = ["running", "maias"])]
 
 def buildRootArgumentParser(programName):
    """

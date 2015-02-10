@@ -8,7 +8,11 @@ deploy, test and run hss.
 ####
 from base import Command
 from help import Help
+from tps import TPs
+from clusters import RunningClusters
 __all__ = [ 
             'Command',
-            'Help'
+            'Help',
+            'TPs',
+            'RunningClusters'
           ]

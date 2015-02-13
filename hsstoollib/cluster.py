@@ -6,6 +6,7 @@ import re
 import ConfigParser
 import StringIO
 import os.path
+import getpass
 
 import logging
 logger = logging.getLogger("hsstoollib.cluster")
@@ -65,6 +66,15 @@ class Cluster:
          processors[name] = Processor (name, self.tutil, self.telorb)
 
       return processors
+
+   def getProcessorsOfType (self, type):
+      self.connect ()
+      processors = {}
+      for name in self.telorb.listProcessors (type = "dicos"):
+         processors[name] = Processor (name, self.tutil, self.telorb)
+
+      return processors
+
 
    def readMaiaLightConfig (self):
       cfg_path = "/tmp/maia_light_%s/%s/%s.cfg" % (self.user, self.name, self.name) 
@@ -281,7 +291,7 @@ class TelORB:
             logger.debug ("Obtained clustername: %s" % name)
       return name
 
-   def listProcessors (self):
+   def listProcessors (self, type = None):
       self.telorb.sendline ("CLI/Processors/listprocessors")
       self.telorb.expect ("\n")
 
@@ -289,9 +299,26 @@ class TelORB:
       processors = []
       for processor in raw.splitlines ():
          if processor:
-            processors.append (processor)
+            if not type or type == self.getProcessorType (processor):
+               processors.append (processor)
 
       return processors
+
+   def getProcessorType (self, name):
+      self.telorb.sendline ("CLI/Processors/getprocessorinfo %s" % name)
+      raw = self.waitForPrompt ()
+
+      for line in raw.splitlines():
+         if line.startswith ("Processor Type:"):
+            fields = line.split(":")
+            field = fields[1].strip ()
+            if field == "IntelPc":
+               return "dicos"
+            elif field == "LinuxIntelPc":
+               return "linux"
+            else:
+               return None
+      return None
 
 # The Backups class
 ##############################################################################
@@ -351,6 +378,10 @@ class Processor:
    def load (self):
       return self.tutil.getProcessorLoads (self.name)
 
+   @property
+   def type (self):
+      return self.telorb.getProcessorType (self.name)
+
 # The Processes class
 #  A wrapper around dict, to allow accessing processes by name and by PID
 ##############################################################################
@@ -384,13 +415,28 @@ class Clusters (dict):
       self.clusters = {}
       self.update ({})
 
-      self.readConfig ()
+      # Go search for clusters
+      self.readMMLConfig ()
+      self.readMLConfigs ()
 
-   def readConfig (self):
+      # Update the list with the clusters we have found
+      self.update (self.clusters)
+
+   def readMMLConfig (self):
+      path = "/tmp/mml/ml_running.conf"
+      if not os.path.isfile (path):
+         return
+
       config = ConfigParser.ConfigParser()
-      config.read("/tmp/mml/ml_running.conf")
+      config.read(path)
+
       for cluster in config.sections ():
          name = config.get (cluster, "name")
+         # Check if we have already found this cluster
+         if self.clusters.has_key (name):
+             continue
+
+         # Otherwise, get it's info and add it
          platform_vip = config.get (cluster, "platform_vip")
          loader_ip = config.get (cluster, "loader_ip")
          int_vmif = config.get (cluster, "int_vmif")
@@ -403,7 +449,46 @@ class Clusters (dict):
                                  int_vmif,
                                  user)
 
-      self.update (self.clusters)
+
+   def readMLConfigs (self):
+      username = getpass.getuser ()
+      path = "/tmp/maia_light_%s" % username
+      
+      if not os.path.isdir (path):
+         return
+
+      names = os.listdir (path)
+      for name in names:
+         # Check if we have already found this cluster
+         if self.clusters.has_key (name):
+            continue
+
+         # Otherwise we look for its cfg file...
+         cfg_path = os.path.join (path, name, name + ".cfg")
+         if not os.path.isfile (cfg_path):
+            continue
+
+         # ... and parse it!
+         dummy = StringIO.StringIO()
+         dummy.write('[dummysection]\n')
+         dummy.write(open(cfg_path).read())
+         dummy.seek(0, os.SEEK_SET)
+
+         config = ConfigParser.ConfigParser()
+         config.readfp(dummy)
+
+         platform_vip = config.get ('dummysection', "ext_vip")
+         loader_ip = config.get ('dummysection', "int_tp1_ip") # TODO: How do we figure this out?
+         int_vmif = config.get ('dummysection', "int_vnet")
+         ext_vmif = config.get ('dummysection', "ext_vnet")
+         user = config.get ('dummysection', "user_name")
+         self.clusters[name] = Cluster (name,
+                                 platform_vip,
+                                 loader_ip,
+                                 ext_vmif,
+                                 int_vmif,
+                                 user)
+
 
 # The Process class
 ##############################################################################

@@ -30,7 +30,8 @@ def buildCommandList():
    return [Help("help", "--help"), Status("status"),
            TPs("tps", aliases = ["processors"]),
            RunningClusters("clusters", aliases = ["running", "maias"]),
-           ShowCluster("show", aliases = ["describe"])]
+           ShowCluster("show", aliases = ["describe"]),
+           Cpuloads("cpuloads", aliases = ["loads"])]
 
 def buildRootArgumentParser(programName):
    """

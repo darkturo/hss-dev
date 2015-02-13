@@ -10,10 +10,12 @@ from base import Command
 from help import Help
 from tps import TPs
 from clusters import RunningClusters, ShowCluster
+from cpuloads import Cpuloads
 __all__ = [ 
             'Command',
             'Help',
             'TPs',
             'RunningClusters',
-            'ShowCluster'
+            'ShowCluster',
+            'Cpuloads'
           ]

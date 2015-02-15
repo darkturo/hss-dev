@@ -1,4 +1,5 @@
 import time
+import sys
 from hsstoollib.commands import Command
 from hsstoollib.exceptions import *
 
@@ -33,7 +34,9 @@ class Cpuloads(Command):
             for tp in tps:
                loads.append (tp.load[load_category])
 
-            print " ".join ('%.1f' % round(load, 1) for load in loads)
+            sys.stdout.write (" ".join ('%.1f' % round(load, 1) for load in loads))
+            sys.stdout.write ("\n")
+            sys.stdout.flush ()
             time.sleep (self.options.poll_rate/1000)
       except KeyboardInterrupt:
          pass

@@ -1,3 +1,9 @@
 #!/bin/bash
-LIB=$(git rev-parse --show-toplevel)
-PYTHONPATH=$LIB /usr/bin/python hsstoollib/dtool.py $*
+
+# Figure out where I am
+full_script_path=`readlink -f $0`
+script_dir=`dirname $full_script_path`
+
+# Set the the python library path to the toplevel of my repo
+LIB=$(cd $script_dir && git rev-parse --show-toplevel)
+PYTHONPATH=$LIB /usr/bin/python $LIB/hsstoollib/dtool.py $*

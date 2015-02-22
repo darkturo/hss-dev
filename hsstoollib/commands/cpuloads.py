@@ -37,7 +37,7 @@ class Cpuloads(Command):
             sys.stdout.write (" ".join ('%.1f' % round(load, 1) for load in loads))
             sys.stdout.write ("\n")
             sys.stdout.flush ()
-            time.sleep (self.options.poll_rate/1000)
+            time.sleep (float(self.options.poll_rate)/1000)
       except KeyboardInterrupt:
          pass
 

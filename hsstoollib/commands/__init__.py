@@ -11,7 +11,7 @@ from help import Help
 from tps import TPs
 from clusters import RunningClusters, ShowCluster
 from cpuloads import Cpuloads
-from getenv import GetEnv
+from env import GetEnv, SetEnv
 __all__ = [ 
             'Command',
             'Help',
@@ -19,5 +19,6 @@ __all__ = [
             'RunningClusters',
             'ShowCluster',
             'Cpuloads',
-            'GetEnv'
+            'GetEnv',
+            'SetEnv'
           ]

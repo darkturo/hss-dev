@@ -111,6 +111,10 @@ class Cluster:
        self.connect ()
        return self.tutil.getEnvironmentVariable (name)
 
+   def setEnvironmentVariable (self, name, value):
+       self.connect ()
+       return self.tutil.setEnvironmentVariable (name, value)
+
 # The TUtil class
 ##############################################################################
 
@@ -267,6 +271,10 @@ class TUtil:
 
       return raw.strip ()
         
+   def setEnvironmentVariable (self, name, value):
+      self.tutil.sendline ("/env/setenv %s %s" % (name, value))
+
+      self.waitForPrompt ()
 
 
 # The TelORB class

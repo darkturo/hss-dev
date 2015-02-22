@@ -32,7 +32,8 @@ def buildCommandList():
            RunningClusters("clusters", aliases = ["running", "maias"]),
            ShowCluster("show", aliases = ["describe"]),
            Cpuloads("cpuloads", aliases = ["loads"]),
-           GetEnv("getenv")]
+           GetEnv("getenv"),
+           SetEnv("setenv")]
 
 def buildRootArgumentParser(programName):
    """

@@ -12,8 +12,7 @@ class GetEnv (Command):
    def addOptionsForCommand(self, parser):
       parser.add_argument('-c', '--cname', default="DefaultCluster",
             help='The cluster to query, default: DefaultCluster')
-      parser.add_argument("variable",
-            help="The variable to retrieve")
+      parser.add_argument("variable", help="The variable to retrieve")
 
    def applyCommand(self):
       cluster = getCluster (self.options.cname)
@@ -28,3 +27,23 @@ class GetEnv (Command):
       else:
          print "No variable with name %s" % self.options.variable
          return False
+
+class SetEnv (Command):
+   """
+   The SetEnv command
+   """
+   def addOptionsForCommand(self, parser):
+      parser.add_argument('-c', '--cname', default="DefaultCluster",
+            help='The cluster to query, default: DefaultCluster')
+      parser.add_argument("variable", help="The variable to set")
+      parser.add_argument("value", help="The value to set")
+
+   def applyCommand(self):
+      cluster = getCluster (self.options.cname)
+
+      if not cluster:
+         return False
+
+      cluster.setEnvironmentVariable (self.options.variable,
+                                      self.options.value)
+      return True

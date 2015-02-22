@@ -11,11 +11,13 @@ from help import Help
 from tps import TPs
 from clusters import RunningClusters, ShowCluster
 from cpuloads import Cpuloads
+from getenv import GetEnv
 __all__ = [ 
             'Command',
             'Help',
             'TPs',
             'RunningClusters',
             'ShowCluster',
-            'Cpuloads'
+            'Cpuloads',
+            'GetEnv'
           ]

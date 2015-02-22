@@ -107,6 +107,10 @@ class Cluster:
 
       return "\n".join (desc)
 
+   def getEnvironmentVariable (self, name):
+       self.connect ()
+       return self.tutil.getEnvironmentVariable (name)
+
 # The TUtil class
 ##############################################################################
 
@@ -249,6 +253,20 @@ class TUtil:
          if load:
             loads[load.group(1)] = float(load.group(2))
       return loads
+
+   # Environment functionality
+   ##########################################################################
+
+   def getEnvironmentVariable (self, name):
+      self.tutil.sendline ("/env/getenv %s" % name)
+      self.tutil.expect ("\n")
+
+      raw = self.waitForPrompt ()
+      if raw.startswith ("No value for:"):
+         return None
+
+      return raw.strip ()
+        
 
 
 # The TelORB class

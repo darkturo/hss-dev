@@ -31,6 +31,7 @@ def buildCommandList():
            TPs("tps", aliases = ["processors"]),
            RunningClusters("clusters", aliases = ["running", "maias"]),
            ShowCluster("show", aliases = ["describe"]),
+           ClusterName("name", aliases = ["clustername"]),
            Cpuloads("cpuloads", aliases = ["loads"]),
            GetEnv("getenv"),
            SetEnv("setenv")]

@@ -35,6 +35,29 @@ class ShowCluster(Command):
    def addOptionsForCommand(self, parser):
       parser.add_argument('-c', '--cname', default="DefaultCluster",
                           help='The cluster to query.')
+      parser.add_argument('-w', '--ws', action='store_true',
+                          help='Print the workspace for this cluster')
+
+   def applyCommand(self):
+      cluster = getCluster (self.options.cname)
+
+      if not cluster:
+         return False
+
+      if self.options.ws:
+          print cluster.workspace
+      else:
+          print cluster.describe ()
+      return True
+
+
+class ClusterName(Command):
+   """
+   The "cluster name" command
+   """
+   def addOptionsForCommand(self, parser):
+      parser.add_argument('-c', '--cname', default="DefaultCluster",
+                          help='The cluster to query')
 
    def applyCommand(self):
       cluster = getCluster (self.options.cname)
@@ -42,5 +65,6 @@ class ShowCluster(Command):
       if not cluster:
          return False
 
-      print cluster.describe ()
+      print cluster.clusterName
       return True
+

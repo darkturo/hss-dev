@@ -12,6 +12,7 @@ from tps import TPs
 from clusters import RunningClusters, ShowCluster, ClusterName
 from cpuloads import Cpuloads
 from env import GetEnv, SetEnv
+from counters import Counters
 __all__ = [ 
             'Command',
             'Help',
@@ -21,5 +22,6 @@ __all__ = [
             'ClusterName',
             'Cpuloads',
             'GetEnv',
-            'SetEnv'
+            'SetEnv',
+            'Counters'
           ]

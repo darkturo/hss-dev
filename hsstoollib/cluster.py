@@ -46,10 +46,16 @@ class Cluster:
       if not self.connected:
          self.tutil = TUtil (self.loader_ip)
          self.telorb = TelORB (self.loader_ip)
+         self.uqtil = UQtil (self.loader_ip)
          self.connected = True
 
    @property
    def clusterName (self):
+      self.connect ()
+      return self.telorb.clustername
+
+   @property
+   def zoneState (self):
       self.connect ()
       return self.telorb.clustername
 
@@ -74,6 +80,11 @@ class Cluster:
          processors[name] = Processor (name, self.tutil, self.telorb)
 
       return processors
+
+   @property
+   def counters (self):
+      self.connect ()
+      return self.uqtil.getAllCounters ()
 
 
    def readMaiaLightConfig (self):
@@ -317,6 +328,18 @@ class TelORB:
             logger.debug ("Obtained clustername: %s" % name)
       return name
 
+   @property
+   def zoneState (self):
+      name = None
+      self.telorb.sendline ("CLI/getinfo")
+      raw = self.waitForPrompt ()
+      for line in raw.splitlines ():
+         if line.startswith ("Zone State: "):
+            fields = line.split(":")
+            state = fields[1].strip ()
+            logger.debug ("Obtained zone state: %s" % state)
+      return state
+
    def listProcessors (self, type = None):
       self.telorb.sendline ("CLI/Processors/listprocessors")
       self.telorb.expect ("\n")
@@ -345,6 +368,82 @@ class TelORB:
             else:
                return None
       return None
+
+# The UQtil class
+##############################################################################
+
+class UQtilError (Error):
+   def __init__ (self, hostname, msg = None):
+      self.kind = "UQtil error (host=%s)" % hostname
+      self.msg = msg
+
+class UQtil:
+   def __init__ (self, hostname):
+      self.hostname = hostname
+      command = "telnet %s %u" % (hostname, 8100)
+      self.uqtil = pexpect.spawn (command)
+      self.uqtil.timeout = 2
+      self.waitForPrompt ()
+
+   def waitForPrompt (self):
+      try:
+         self.uqtil.expect ("U-Qtil> ")
+         return self.uqtil.before
+      except pexpect.EOF:
+         self._raiseUQtilError ("telnet connection ended unexpectedly after:\n%s " % self.uqtil.before)
+      except pexpect.TIMEOUT:
+         self._raiseUQtilError ("Did not receive prompt after:\n%s " % self.uqtil.before)
+
+   def _raiseUQtilError (self, msg):
+      raise UQtilError (self.hostname, msg)
+
+   # Counters functionality
+   ##########################################################################
+
+   def getAllCounters (self):
+      # Find the jobs
+      self.uqtil.sendline ("pmdb/measurementjobs/lspmdb")
+      self.uqtil.expect ("\n")
+      rawJobs = self.waitForPrompt ()
+
+      counters = {}
+      for job in rawJobs.splitlines():
+         # Find the counters in the job
+         logger.debug ("Fetching counters from job: %s" % job)
+         self.uqtil.sendline ("pmdb/measurementjobs/%s/lspmdb" % job)
+         self.uqtil.expect ("\n")
+         rawCounters = self.waitForPrompt ()
+         for name in rawCounters.splitlines():
+            # Create a Counter class for the counter
+            logger.debug ("Found counter: %s" % name)
+            counters[name] = Counter (name, job, self) 
+
+      return counters
+
+   def getCounter (self, job, name):
+      self.uqtil.sendline ("pmdb/measurementjobs/%s/%s/printmd" % (job, name))
+      self.uqtil.expect ("\n")
+      raw = self.waitForPrompt ()
+
+      values = {}
+      for line in raw.splitlines():
+         fields = line.split()
+         if len(fields) ==  2:
+            values[fields[1]] = fields[0]
+      return values
+
+# The Counter class
+##############################################################################
+
+class Counter(dict):
+   def  __init__ (self, name, job, uqtil):
+      self.uqtil = uqtil
+      self.job = job
+      self.name = name
+      self.refresh ()
+
+   def refresh (self):
+      self.update (self.uqtil.getCounter (self.job, self.name))
 
 # The Backups class
 ##############################################################################

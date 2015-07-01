@@ -34,7 +34,8 @@ def buildCommandList():
            ClusterName("name", aliases = ["clustername"]),
            Cpuloads("cpuloads", aliases = ["loads"]),
            GetEnv("getenv"),
-           SetEnv("setenv")]
+           SetEnv("setenv"),
+           Counters("counters")]
 
 def buildRootArgumentParser(programName):
    """

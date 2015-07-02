@@ -26,6 +26,7 @@ class Counters(Command):
       else:
          try:
             previous = cluster.counters
+            print "Starting measurements."
             while True:
                new = cluster.counters
                compareCounters (previous, new)
@@ -49,17 +50,21 @@ def compareCounters (previous, new):
          state = None
          if not counter.name in previous:
             # We have found a new counter
-            state = "new counter"
+            state = "new counter. Value=%s" % newValue
          elif not valueName in previous[counter.name]:
             # We have found a new value
-            state = "new value"
+            state = "new value. Value=%s" % newValue
          else:
             # We already have an old value
             oldValue = previous[counter.name][valueName]
             if oldValue != newValue:
-               state = "changed from %s" % oldValue
-         
+               state = "changed %s->%s: " % (oldValue, newValue)
+               diff = int(newValue) - int(oldValue)
+               if diff >= 0:
+                  state += "+"
+               state += str(diff)
+          
          # If it's state changed, print it!
          if state:
-            print "(%s) %s/%s %s: current value=%s" % (time.strftime("%X"), counter.job, counter.name, state, newValue)
+            print "(%s) %s: %s %s" % (time.strftime("%X"), counter.name, valueName, state)
 

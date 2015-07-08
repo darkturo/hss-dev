@@ -415,6 +415,7 @@ class UQtil:
          rawCounters = self.waitForPrompt ()
          for name in rawCounters.splitlines():
             if name.endswith("/"):
+               name = name.strip("/")
                # Create a Counter class for the counter
                logger.debug ("Found counter: %s" % name)
                counters[name] = Counter (name, job, self)

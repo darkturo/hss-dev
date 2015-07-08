@@ -410,13 +410,14 @@ class UQtil:
       for job in rawJobs.splitlines():
          # Find the counters in the job
          logger.debug ("Fetching counters from job: %s" % job)
-         self.uqtil.sendline ("pmdb/measurementjobs/%s/lspmdb" % job)
+         self.uqtil.sendline ("ls pmdb/measurementjobs/%s" % job)
          self.uqtil.expect ("\n")
          rawCounters = self.waitForPrompt ()
          for name in rawCounters.splitlines():
-            # Create a Counter class for the counter
-            logger.debug ("Found counter: %s" % name)
-            counters[name] = Counter (name, job, self) 
+            if name.endswith("/"):
+               # Create a Counter class for the counter
+               logger.debug ("Found counter: %s" % name)
+               counters[name] = Counter (name, job, self)
 
       return counters
 

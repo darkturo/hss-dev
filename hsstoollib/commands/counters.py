@@ -14,6 +14,8 @@ class Counters(Command):
                           help='The cluster to query.')
       parser.add_argument('-f', '--follow', action='store_true',
                           help='Monitor the counters, print them as they are increased.')
+      parser.add_argument('-1', '--once', action='store_true',
+                          help='Compare counters only once.')
 
    def applyCommand(self):
       cluster = getCluster (self.options.cname)
@@ -21,9 +23,7 @@ class Counters(Command):
       if not cluster:
          return False
 
-      if not self.options.follow:
-         print cluster.counters
-      else:
+      if self.options.follow:
          try:
             previous = cluster.counters
             print "Starting measurements."
@@ -33,7 +33,20 @@ class Counters(Command):
                previous = new
          except KeyboardInterrupt:
             pass
-
+      elif self.options.once:
+         print "Collecting counters, wait a moment..."
+         first = cluster.counters
+         try:
+            print "Ready. Use Ctrl-C to make comparison."
+            # Wait for interrupt
+            while True:
+               time.sleep(10)
+         except KeyboardInterrupt:
+            print "Collecting counters, wait a moment..."
+            second = cluster.counters
+            compareCounters (first, second)
+      else:
+         print cluster.counters
 
       return True
 
